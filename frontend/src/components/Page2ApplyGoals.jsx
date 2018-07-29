@@ -34,7 +34,7 @@ const PRESETS = {
 };
 
 const ROUTE_COLORS = {
-    walk: "#00FF00",
+    walk: "#FF7000",
     bike: "#0000FF",
     bus: "#008888",
     metro: "#FF0000",
@@ -165,6 +165,11 @@ class Page2ApplyGoals extends Component {
 
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
+                              checked={this.state.preset === healthiest}
+                              onChange={this.selectPreset.bind(this, healthiest)}/> healthiest</label>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === fastest}
                               onChange={this.selectPreset.bind(this, fastest)}/> fastest</label>
 
@@ -172,12 +177,6 @@ class Page2ApplyGoals extends Component {
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === cheapest}
                               onChange={this.selectPreset.bind(this, cheapest)}/> cheapest</label>
-
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <label><input type={'radio'} name={'preset'}
-                              checked={this.state.preset === healthiest}
-                              onChange={this.selectPreset.bind(this, healthiest)}/> healthiest</label>
-
 
                 {
                     this.state.preset
