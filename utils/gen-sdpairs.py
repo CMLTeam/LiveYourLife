@@ -98,7 +98,12 @@ for i in range(len(locs) - 1):
     logging.debug("------------------------------------------")
     sdpairs.append(sdpair)
 
+print json.dumps(sdpairs, indent=4, sort_keys=True)
 
+
+sys.exit()
+
+#here we need to reload sdpairs
 
 # generate all possible trajectories (permutations of Trips)
 l = []
