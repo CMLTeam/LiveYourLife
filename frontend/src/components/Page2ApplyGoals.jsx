@@ -5,30 +5,28 @@ import SliderRow from "./SliderRow";
 import {withScriptjs, withGoogleMap, GoogleMap, Marker, Polyline} from "react-google-maps";
 import Routes from './Routes';
 
+const PRICE = 'Max Price';
+const CALORIES = 'Min Calories';
 const PRESETS = {
     'fastest': {
         'route': 0,
-        'Price': 90,
-        'Calories': 10,
-        'Distance': 20
+        [PRICE]: 95,
+        [CALORIES]: 5,
     },
     'cheapest': {
         'route': 1,
-        'Price': 20,
-        'Calories': 70,
-        'Distance': 70
+        [PRICE]: 10,
+        [CALORIES]: 20,
     },
     'healthiest': {
         'route': 2,
-        'Price': 50,
-        'Calories': 90,
-        'Distance': 10
+        [PRICE]: 30,
+        [CALORIES]: 90,
     },
     'balanced': {
         'route': 3,
-        'Price': 50,
-        'Calories': 50,
-        'Distance': 50
+        [PRICE]: 50,
+        [CALORIES]: 50,
     },
 };
 
@@ -129,7 +127,7 @@ class Page2ApplyGoals extends Component {
                     &&
                     <div>
                         {
-                            ['Price', 'Calories', 'Distance'].map(p =>
+                            [PRICE, CALORIES].map(p =>
                                 <SliderRow title={p} key={this.state.preset + p} value={this.state.presetValues[p]}/>
                             )
                         }
