@@ -20,7 +20,8 @@
   </head>
   <body>
     <div id="map"></div>
-    <script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-git.min.js"></script>
+    <script type="text/javascript">
       //input calculated travel Legs here like so
       var dummyTravelLeg = {
         //starbucks 1
@@ -51,7 +52,11 @@
       var directionsService;
       var directionsDisplay;
       //var placesService;
-
+		
+		
+		$(document).ready(function () {
+			//your code here
+		});
       function initMap() {
         directionsService = new google.maps.DirectionsService();
         directionsDisplay = new google.maps.DirectionsRenderer();
@@ -94,7 +99,9 @@
           }
         });
       }
-
+	  $(document).ready(function () {
+		//your code here
+		});
       function getRoute(start, end, mode) {
         // coord.co request
         $.get('https://api.coord.co/v1/routing/route?origin_latitude=' + start.lat + '&origin_longitude=' + start.lng
@@ -135,10 +142,9 @@
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro
 &callback=initMap"
-    async defer></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-git.min.js"></script>
+    async></script>
 
   </body>
 </html>
