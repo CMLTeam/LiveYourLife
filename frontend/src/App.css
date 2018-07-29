@@ -18,3 +18,7 @@
 .task-item .invalid {
     background: #faa;
 }
+
+.task-item input {
+    width: 600px
+}
