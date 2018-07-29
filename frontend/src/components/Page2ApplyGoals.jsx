@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import 'rc-slider/assets/index.css';
 import SliderRow from "./SliderRow";
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
 const PRESETS = {
     'fastest': {
@@ -25,6 +26,14 @@ const PRESETS = {
         'Distance': 50
     },
 };
+
+const MyMapComponent = withScriptjs(withGoogleMap((props) =>
+    <GoogleMap
+        defaultZoom={8}
+        defaultCenter={{ lat: -34.397, lng: 150.644 }}
+    >
+        {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} />}
+    </GoogleMap>));
 
 class Page2ApplyGoals extends Component {
     state = {
@@ -69,6 +78,14 @@ class Page2ApplyGoals extends Component {
                         }
                     </div>
                 }
+
+                <MyMapComponent isMarkerShown
+                                // googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
+                                loadingElement={<div style={{ height: `100%` }} />}
+                                containerElement={<div style={{ height: `400px` }} />}
+                                mapElement={<div style={{ height: `100%` }} />}/>
+                {/*<MyMapComponent isMarkerShown={false} />*/}
 
                 <br/>
                 <Link to={'/'}>Prev</Link>
