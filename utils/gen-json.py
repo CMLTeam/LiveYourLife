@@ -1,10 +1,22 @@
+#!/usr/bin/python
+
 import googlemaps
 import json
 import urllib2
 import itertools
+import sys
+import logging, sys
+
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 apikey="AIzaSyCpPfnNhtN1ecsNLedF7GlfmPdLhlhqUm4"
 gmaps = googlemaps.Client(key=apikey)
+
+locfile=sys.argv[1]
+with open(locfile) as f:
+    locs = f.readlines()
+    
+locs = [x.strip() for x in locs] 
 
 def location(locstr):
     gr = gmaps.geocode(locstr)
@@ -13,10 +25,6 @@ def location(locstr):
     lng = gr[0]["geometry"]["location"]["lng"]
     return (lat, lng)
 
-locs = ["Golden Gate Appartments, San Francisco, CA",
-        "Sightglass Coffee, San Francisco, CA",
-        "Valencia Street Medical Center, San Francisco, CA"
-        ]
 
 def get_trips(org, dst):
     (orglat, orglng) = location(org)
@@ -68,18 +76,18 @@ def calc_trip_cost(trip):
     return (time, cost, cal)
 
 def print_sdpair(sdpair):
-    print "Trips: " + str(len(sdpair["trips"]))
+    logging.debug("Trips: " + str(len(sdpair["trips"])))
     ti = 1
     for trip in sdpair["trips"]:
-        print "Trip " + str(ti)
+        logging.debug("Trip " + str(ti))
         costs = calc_trip_cost(trip)
-        print "  " + str(costs[0]) + "sec " + str(costs[1]) + "$ " + str(costs[2]) + "cal"
-        print "  Legs " + str(len(trip["legs"]))
+        logging.debug("  " + str(costs[0]) + "sec " + str(costs[1]) + "$ " + str(costs[2]) + "cal")
+        logging.debug("  Legs " + str(len(trip["legs"])))
         calc_trip_cost(trip)
         li = 1
         for leg in trip["legs"]:
             lstats = leg["statistics"]
-            print "    Leg " + str(ti) + "-" + str(li) + ": " + leg["mode"] + " " + str(lstats["distance_km"]) + "km " + str(lstats["duration_s"]) + "sec "
+            logging.debug("    Leg " + str(ti) + "-" + str(li) + ": " + leg["mode"] + " " + str(lstats["distance_km"]) + "km " + str(lstats["duration_s"]) + "sec ")
             li = li + 1
         ti = ti + 1
 
@@ -87,7 +95,7 @@ sdpairs = []
 for i in range(len(locs) - 1):
     sdpair = get_trips(locs[i], locs[i + 1])
     print_sdpair(sdpair)
-    print "------------------------------------------"
+    logging.debug("------------------------------------------")
     sdpairs.append(sdpair)
 
 
@@ -98,7 +106,7 @@ for sdpair in sdpairs:
     l.append(range(0, len(sdpair["trips"])))
 perms = [s for s in itertools.product(*l)]
 
-print perms
+logging.debug(perms)
 
 trajs = []
 for perm in perms:
@@ -109,13 +117,13 @@ for perm in perms:
         traj["trips"].append(sdpair["trips"][trip])
     trajs.append(traj)
 
-print len(trajs)
+logging.debug(len(trajs))
              
 # ok, now let's iterate over trajs and see their distances
 
 i = 1
 for traj in trajs:
-    print "Traj " + str(i)
+    logging.debug("Traj " + str(i))
     j = 0
     traj_cost = 0
     traj_cal = 0
@@ -127,7 +135,7 @@ for traj in trajs:
         traj_time = traj_time + trip_time
         #print "  Trip " + str(j) + ": " + str(trip["statistics"]["distance_km"])
         j = j + 1
-    print "  " + str(traj_time) + "sec " + str(traj_cost) + "$ " + str(traj_cal) + "cal"
+    logging.debug("  " + str(traj_time) + "sec " + str(traj_cost) + "$ " + str(traj_cal) + "cal")
     traj["duration"] = traj_time
     traj["cost"] = traj_cost
     traj["cal"] = traj_cal
