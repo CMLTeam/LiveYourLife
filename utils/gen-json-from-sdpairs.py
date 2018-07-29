@@ -9,7 +9,8 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 sdpairsfile=sys.argv[1]
 
-# THIS IS A COPY FROM gen-json.py, have to merge!
+# INIITALLY THIS IS A COPY FROM gen-json.py, have to merge!
+# BUT ADDED CARS
 def calc_trip_cost(trip):
     cost = 0
     cal = 0
@@ -30,6 +31,9 @@ def calc_trip_cost(trip):
         elif leg["mode"] == "metro":
             # no calories
             cost = cost + 2.25
+        elif leg["mode"] == "CAR":
+            # no calories
+            cost = cost + 5 + 2 * lstats["distance_km"]
         else:
             print "UNRECOGNIZED!"
     return (time, cost, cal)
