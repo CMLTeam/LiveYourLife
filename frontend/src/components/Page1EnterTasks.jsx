@@ -129,10 +129,7 @@ class Page1EnterTasks extends Component {
     };
 
     removeTask = (uid) => {
-        let tasks = this.state.tasks.filter(e => e.uid !== uid);
-        if (tasks.length === 0)
-            tasks = [this.newTask()];
-        this.setState({tasks})
+        this.setState({tasks: this.state.tasks.filter(e => e.uid !== uid)})
     };
 
     render() {
@@ -199,7 +196,10 @@ class Page1EnterTasks extends Component {
                                     </div>
                                 </div>
                             }
-                            <button type={'button'} onClick={this.removeTask.bind(this, t.uid)}>x</button>
+                            {
+                                !t.isRaw &&
+                                <button type={'button'} onClick={this.removeTask.bind(this, t.uid)}>x</button>
+                            }
                         </div>)
                     }
                 </div>
