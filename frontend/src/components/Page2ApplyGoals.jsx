@@ -66,10 +66,15 @@ class Page2ApplyGoals extends Component {
     };
 
     selectPreset = (preset) => {
+        const route = Routes[PRESETS[preset].route];
+        const {cal, cost, duration} = route;
         this.setState({
             preset: preset,
             presetValues: PRESETS[preset],
-            lines: this.coordRouteToLines(Routes[PRESETS[preset].route])
+            lines: this.coordRouteToLines(route),
+            cal,
+            cost,
+            duration
         })
     };
 
@@ -95,6 +100,7 @@ class Page2ApplyGoals extends Component {
     };
 
     render() {
+        const {cal, cost, duration} = this.state;
         return (
             <div>
                 <h2>Apply Goals</h2>
@@ -130,9 +136,9 @@ class Page2ApplyGoals extends Component {
                 }
 
                 {
-                    this.state.lines.length
+                    this.state.lines.length !== 0
                     &&
-                    <table style={{width: '100%'}}>
+                    <table style={{width: '100%', marginTop: 20}}>
                         <tbody>
                         <tr>
                             <td style={{width: '50%'}} align="right" valign="top">
@@ -144,12 +150,17 @@ class Page2ApplyGoals extends Component {
                                                 lines={this.state.lines}
                                 />
                             </td>
-                            <td style={{width: '50%', padding:5}} align="left" valign="top">
+                            <td style={{width: '10%', paddingLeft: 20}} align="left" valign="top">
                                 {
                                     Object.keys(ROUTE_COLORS).map(k =>
                                         <div style={{color: ROUTE_COLORS[k]}}>{k}</div>
                                     )
                                 }
+                            </td>
+                            <td style={{width: '40%'}} align="left" valign="top">
+                                <p>Calories: <b>{(cal * 100 | 0) / 100}</b></p>
+                                <p>Cost: <b>${(cost * 100 | 0) / 100}</b></p>
+                                <p>Total Duration: <b>{duration / 60 | 0} min</b></p>
                             </td>
                         </tr>
                         </tbody>
@@ -158,7 +169,6 @@ class Page2ApplyGoals extends Component {
 
                 <br/>
                 <Link to={'/'}>Prev</Link>
-                {' '}<Link to={'/page3'}>Next</Link>
             </div>
         );
     }
