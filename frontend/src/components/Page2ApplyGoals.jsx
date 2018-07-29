@@ -103,22 +103,23 @@ class Page2ApplyGoals extends Component {
         const {cal, cost, duration} = this.state;
         return (
             <div>
-                <h2>Apply Goals</h2>
+                <h2>Best Plan For You</h2>
 
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === 'fastest'}
                               onChange={this.selectPreset.bind(this, 'fastest')}/> fastest</label>
-                {' '}
+
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === 'cheapest'}
                               onChange={this.selectPreset.bind(this, 'cheapest')}/> cheapest</label>
 
-                {' '}
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === 'healthiest'}
                               onChange={this.selectPreset.bind(this, 'healthiest')}/> healthiest</label>
 
-                {' '}
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === 'balanced'}
                               onChange={this.selectPreset.bind(this, 'balanced')}/> balanced</label>
