@@ -53,7 +53,13 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
         defaultZoom={13}
         defaultCenter={{lat: 37.765512, lng: -122.418178}}
     >
-        {/*{props.isMarkerShown && <Marker position={{lat: -34.397, lng: 150.644}}/>}*/}
+        {/*<Marker position={{lat: 37.765512, lng: -122.418178}}/>*/}
+        {props.markers && props.markers.map((m, i) => {
+                console.info(55, m, i)
+                return <Marker key={i}
+                               position={m.position}/>
+            }
+        )}
         {props.lines && props.lines.map((l, i) =>
             <Polyline
                 key={i}
@@ -81,10 +87,13 @@ class Page2ApplyGoals extends Component {
         let presetValues = PRESETS[preset];
         const route = this.determineRouteByPresetName(preset);
         const {cal, cost, duration} = route;
+        let linesMarkers = this.coordRouteToLines(route);
+        console.info(444,linesMarkers)
         this.setState({
             preset: preset,
             presetValues,
-            lines: this.coordRouteToLines(route),
+            lines: linesMarkers[0],
+            markers: linesMarkers[1],
             cal,
             cost,
             duration
@@ -94,9 +103,11 @@ class Page2ApplyGoals extends Component {
     selectPresetByValues = (presetValues) => {
         const route = this.determineRoute(presetValues[PRICE], presetValues[CALORIES]);
         const {cal, cost, duration} = route;
+        let linesMarkers = this.coordRouteToLines(route);
         this.setState({
             presetValues,
-            lines: this.coordRouteToLines(route),
+            lines: linesMarkers[0],
+            markers: linesMarkers[1],
             cal,
             cost,
             duration
@@ -145,12 +156,23 @@ class Page2ApplyGoals extends Component {
     };
     coordRouteToLines = (route) => {
         const lines = [];
-        route.trips.forEach(t => {
-            this.coordTripToLines(t).forEach(l => {
+        const markers = [];
+        route.trips.forEach((t, i) => {
+            let tripLines = this.coordTripToLines(t);
+            markers.push({
+                position: tripLines[0].path[0]
+            });
+            tripLines.forEach(l => {
                 lines.push(l)
-            })
+            });
+            if (i === route.trips.length - 1) {
+                let pp = tripLines[tripLines.length-1].path;
+                markers.push({
+                    position: pp[pp.length - 1]
+                })
+            }
         });
-        return lines;
+        return [lines, markers];
     };
 
     render() {
@@ -213,6 +235,7 @@ class Page2ApplyGoals extends Component {
                                                 containerElement={<div style={{height: `400px`, width: '600px'}}/>}
                                                 mapElement={<div style={{height: `100%`}}/>}
                                                 lines={this.state.lines}
+                                                markers={this.state.markers}
                                 />
                             </td>
                             <td style={{width: '10%', paddingLeft: 20}} align="left" valign="top">
