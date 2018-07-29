@@ -7,7 +7,7 @@ import {GoogleMap, Marker, Polyline, withGoogleMap, withScriptjs} from "react-go
 import Routes from './Routes1';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import uberLogo from '../uber-logo-9B6033C292-seeklogo.com.png';
-import logo from '../logo-1.png';
+import logo from '../logo-2.png';
 
 const PRICE = 'Max Price';
 const CALORIES = 'Min Calories';
@@ -184,7 +184,7 @@ class Page2ApplyGoals extends Component {
         const {cal, cost, duration} = this.state;
         return (
             <div>
-                <h2 style={{marginBottom:30}}>{/*<img src={logo} height={100}/>*/} Live Your Life</h2>
+                <h2 style={{marginBottom:30}}><img src={logo} height={50}/> Live Your Life</h2>
 
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === balanced}
@@ -259,9 +259,9 @@ class Page2ApplyGoals extends Component {
                                     )
                                 }
                                 <div style={{paddingTop:130}} className={'summary'}>
-                                    <p>Calories: <b>{(cal * 100 | 0) / 100}</b></p>
-                                    <p>Cost: <b>${(cost * 100 | 0) / 100}</b></p>
-                                    <p>Total Duration: <b>{duration / 60 | 0} min</b></p>
+                                    <p><FontAwesomeIcon icon={''}/> Calories: <b>{(cal * 100 | 0) / 100}</b></p>
+                                    <p><FontAwesomeIcon icon={'money-bill-alt'}/> Cost: <b>${(cost * 100 | 0) / 100}</b></p>
+                                    <p><FontAwesomeIcon icon={'stopwatch'}/>&nbsp; Total Duration: <b>{duration / 60 | 0} min</b></p>
                                 </div>
                             </td>
                         </tr>
