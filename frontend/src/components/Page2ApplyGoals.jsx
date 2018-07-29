@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import Slider, {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
-
-const SliderT = Slider.createSliderWithTooltip(Slider);
+import SliderRow from "./SliderRow";
 
 const PRESETS = {
     'fastest': {
@@ -31,17 +30,6 @@ const PRESETS = {
 class Page2ApplyGoals extends Component {
     state = {
         preset: ''
-    };
-
-    slider = (title, value) => {
-        return <table key={title} style={{width: '60%', margin: '0 auto'}}>
-            <tbody>
-            <tr>
-                <td style={{width: '20%'}}>{title}</td>
-                <td style={{width: '80%'}}><SliderT defaultValue={value} onChange={(v)=>{console.info(111,v)}}/></td>
-            </tr>
-            </tbody>
-        </table>
     };
 
     selectPreset = (preset) => {
@@ -77,7 +65,7 @@ class Page2ApplyGoals extends Component {
                     <div>
                         {
                             ['Price', 'Calories', 'Distance'].map(p =>
-                                this.slider(p, this.state.presetValues[p])
+                                <SliderRow title={p} key={this.state.preset + p} value={this.state.presetValues[p]}/>
                             )
                         }
                     </div>
