@@ -3,10 +3,9 @@ import json
 import urllib2
 
 apikey="AIzaSyCpPfnNhtN1ecsNLedF7GlfmPdLhlhqUm4"
-
 gmaps = googlemaps.Client(key=apikey)
 
-def locations(locstr):
+def location(locstr):
     gr = gmaps.geocode(locstr)
     #print json.dumps(gr, indent=4, sort_keys=True)
     lat = gr[0]["geometry"]["location"]["lat"]
@@ -14,37 +13,34 @@ def locations(locstr):
     return (lat, lng)
 
 locs = ["Golden Gate Appartments, San Francisco, CA",
-        "Sightglass Coffee, San Francisco, CA"]
+        "Sightglass Coffee, San Francisco, CA",
+        "Valencia Street Medical Center, San Francisco, CA"
+        ]
 
-coords = {}
+def get_trips(org, dst):
+    (orglat, orglng) = location(org)
+    (dstlat, dstlng) = location(dst)
 
-for loc in locs:
-    # XXX: REMOVE 
-    coords[loc] = (0,0)
-    #coords[loc] = locations(loc)
+    #orglat="37.7861238"
+    #orglng="-122.4317792"
+    #dstlat="37.7770356"
+    #dstlng="-122.40845430000002"
 
-for loc in locs:
-    print coords[loc]
+    modes="bus%2Cmetro%2Cferry%2Crail%2Cbike"
+    priority="soon"
+    time="2018-07-29T04%3A46%3A27.543Z"
+    time_mode="depart"
+    bike_systems="FordGoBike%2CJumpSF"
+    access_key="qZxum2xJHdPljElFFrBpcFrftbSOL0aAs5joz-f8oH0"
 
-modes="bus%2Cmetro%2Cferry%2Crail%2Cbike"
-priority="soon"
-time="2018-07-29T04%3A46%3A27.543Z"
-time_mode="depart"
-bike_systems="FordGoBike%2CJumpSF"
-access_key="qZxum2xJHdPljElFFrBpcFrftbSOL0aAs5joz-f8oH0"
+    numopts="5"
 
-orglat="37.7861238"
-orglng="-122.4317792"
-dstlat="37.7770356"
-dstlng="-122.40845430000002"
-numopts="5"
+    url="https://api.coord.co/v1/routing/route?origin_latitude={}&origin_longitude={}&destination_latitude={}&destination_longitude={}&modes={}&num_options={}&priority={}&time={}&time_mode={}&bike_systems={}&access_key={}".format(orglat, orglng, dstlat, dstlng, modes, numopts, priority, time, time_mode, bike_systems, access_key)
 
-url="https://api.coord.co/v1/routing/route?origin_latitude={}&origin_longitude={}&destination_latitude={}&destination_longitude={}&modes={}&num_options={}&priority={}&time={}&time_mode={}&bike_systems={}&access_key={}".format(orglat, orglng, dstlat, dstlng, modes, numopts, priority, time, time_mode, bike_systems, access_key)
+    contents = json.loads(urllib2.urlopen(url).read())
+    #print json.dumps(contents, indent=4, sort_keys=True)
+    return contents
 
-#contents = urllib2.urlopen("https://api.coord.co/v1/routing/route?origin_latitude=37.7861238&origin_longitude=-122.4317792&destination_latitude=37.7770356&destination_longitude=-122.40845430000002&modes=bus%2Cmetro%2Cferry%2Crail%2Cbike&num_options=3&priority=soon&time=2018-07-29T04%3A46%3A27.543Z&time_mode=depart&bike_systems=FordGoBike%2CJumpSF&access_key=qZxum2xJHdPljElFFrBpcFrftbSOL0aAs5joz-f8oH0").read()
-
-contents = json.loads(urllib2.urlopen(url).read())
-#print json.dumps(contents, indent=4, sort_keys=True)
 
 def calc_trip_cost(trip):
     cost = 0
@@ -63,23 +59,38 @@ def calc_trip_cost(trip):
         elif leg["mode"] == "bus":
             # no calories
             cost = cost + 2.25
+        elif leg["mode"] == "metro":
+            # no calories
+            cost = cost + 2.25
+        else:
+            print "UNRECOGNIZED!"
     return (time, cost, cal)
 
-print "Trips: " + str(len(contents["trips"]))
+def print_sdpair(sdpair):
+    print "Trips: " + str(len(sdpair["trips"]))
+    ti = 1
+    for trip in sdpair["trips"]:
+        print "Trip " + str(ti)
+        costs = calc_trip_cost(trip)
+        print "  " + str(costs[0]) + "sec " + str(costs[1]) + "$ " + str(costs[2]) + "cal"
+        print "  Legs " + str(len(trip["legs"]))
+        calc_trip_cost(trip)
+        li = 1
+        for leg in trip["legs"]:
+            lstats = leg["statistics"]
+            print "    Leg " + str(ti) + "-" + str(li) + ": " + leg["mode"] + " " + str(lstats["distance_km"]) + "km " + str(lstats["duration_s"]) + "sec "
+            li = li + 1
+        ti = ti + 1
 
-ti = 1
-for trip in contents["trips"]:
-    print "Trip " + str(ti)
-    costs = calc_trip_cost(trip)
-    print "  " + str(costs[0]) + "sec " + str(costs[1]) + "$ " + str(costs[2]) + "cal"
-    print "  Legs " + str(len(trip["legs"]))
-    calc_trip_cost(trip)
-    li = 1
-    for leg in trip["legs"]:
-        lstats = leg["statistics"]
-        print "    Leg " + str(ti) + "-" + str(li) + ": " + leg["mode"] + " " + str(lstats["distance_km"]) + "km " + str(lstats["duration_s"]) + "sec "
-        li = li + 1
-    ti = ti + 1
+sdpairs = []
+
+for i in range(len(locs) - 1):
+    sdpair = get_trips(locs[i], locs[i + 1])
+    print_sdpair(sdpair)
+    print "------------------------------------------"
+    sdpairs.append(sdpair)
+
+#------------------------------------------------------------------------
 
 #print json.dumps(contents, indent=4, sort_keys=True)
 
