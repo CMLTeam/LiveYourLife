@@ -17,7 +17,7 @@ class Page1EnterTasks extends Component {
     onTaskKeyPress = (event) => {
         const uid = event.target.id;
         if (event.key === 'Enter') {
-            const tasks = this.state.tasks.map(e => e.uid === uid ? {...e, isRaw: false} : e);
+            const tasks = this.state.tasks.map(e => e.uid === uid ? this.parseTask(e) : e);
             let uid1 = this.newUid();
             tasks.push({isRaw: true, text: '', uid: uid1});
             setTimeout(() => {
@@ -25,6 +25,52 @@ class Page1EnterTasks extends Component {
             }, 100);
             this.setState({tasks})
         }
+    };
+
+    parseTask = (task) => {
+
+        const text = task.text;
+
+        // ACTION for DURATION (at|around) TIME
+        // ACTION for DURATION
+        // ACTION (at|around) TIME
+        // ACTION
+
+        let action, duration, time;
+
+        const FOR = /\s+for\s+/i;
+        const AT = /\s+at\s+/i;
+
+        if (!FOR.test(text)) {
+            action = this.parseAction(text);
+        } else {
+            let parts = text.split(FOR);
+            action = this.parseAction(parts[0]);
+            let rest = parts[1];
+            if (AT.test(rest)) {
+                let parts = text.split(AT);
+                duration = this.parseDuration(parts[0]);
+                time = this.parseLocation(parts[1])
+            } else {
+                duration = this.parseDuration(rest);
+            }
+        }
+
+        return {...task, isRaw: false, action, duration, time};
+    };
+
+    parseAction = (v) => {
+        // go to dentist
+        // visit coffee shop
+        return v;
+    };
+
+    parseDuration = (v) => {
+        return v;
+    };
+
+    parseLocation = (v) => {
+        return v;
     };
 
     removeTask = (uid) => {
@@ -49,7 +95,20 @@ class Page1EnterTasks extends Component {
                                        onKeyPress={this.onTaskKeyPress}
                                 />
                                 :
-                                <span>Parsed: {t.text}</span>
+                                <div style={{ display: 'inline-block' }}>
+                                    <div className={'parsed-element'}>
+                                        <span className={'parsed-element-name'}>ACTION</span>
+                                        {' '}{t.action}
+                                    </div>
+                                    <div className={'parsed-element'}>
+                                        <span className={'parsed-element-name'}>DURATION</span>
+                                        {' '}{t.duration}
+                                    </div>
+                                    <div className={'parsed-element'}>
+                                        <span className={'parsed-element-name'}>TIME</span>
+                                        {' '}{t.time}
+                                    </div>
+                                </div>
                             }
                             <button type={'button'} onClick={this.removeTask.bind(this, t.uid)}>x</button>
                         </div>)
