@@ -28,3 +28,11 @@
     /*border: 0;*/
     padding: 2px 7px;
 }
+
+.summary b {
+    font-size: 1.4em;
+}
+
+.summary p {
+    margin-bottom: 5px;
+}

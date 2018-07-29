@@ -3,8 +3,10 @@ import {Link} from "react-router-dom";
 import 'rc-slider/assets/index.css';
 import SliderRow from "./SliderRow";
 import {GoogleMap, Marker, Polyline, withGoogleMap, withScriptjs} from "react-google-maps";
-import Routes from './Routes';
+// import Routes from './Routes';
+import Routes from './Routes1';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import uberLogo from '../uber-logo-9B6033C292-seeklogo.com.png';
 
 const PRICE = 'Max Price';
 const CALORIES = 'Min Calories';
@@ -38,6 +40,7 @@ const ROUTE_COLORS = {
     bike: "#0000FF",
     bus: "#008888",
     metro: "#FF0000",
+    uber: "#000000",
     // unknown: "#FFFF00",
 };
 
@@ -46,6 +49,7 @@ const ROUTE_ICONS = {
     bike: "bicycle",
     bus: "bus",
     metro: "subway",
+    uber: "uber",
 };
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
@@ -88,7 +92,7 @@ class Page2ApplyGoals extends Component {
         const route = this.determineRouteByPresetName(preset);
         const {cal, cost, duration} = route;
         let linesMarkers = this.coordRouteToLines(route);
-        console.info(444,linesMarkers)
+        console.info(444, linesMarkers)
         this.setState({
             preset: preset,
             presetValues,
@@ -147,7 +151,7 @@ class Page2ApplyGoals extends Component {
         const {legs} = trip;
         return legs.map(leg => {
             return {
-                color: ROUTE_COLORS[leg.mode],
+                color: ROUTE_COLORS[leg.mode] || "#fff",
                 path: leg.geometry.coordinates.map(c => {
                     return {lat: c[1], lng: c[0]}
                 })
@@ -166,7 +170,7 @@ class Page2ApplyGoals extends Component {
                 lines.push(l)
             });
             if (i === route.trips.length - 1) {
-                let pp = tripLines[tripLines.length-1].path;
+                let pp = tripLines[tripLines.length - 1].path;
                 markers.push({
                     position: pp[pp.length - 1]
                 })
@@ -225,10 +229,10 @@ class Page2ApplyGoals extends Component {
                 {
                     this.state.lines.length !== 0
                     &&
-                    <table style={{width: '100%', marginTop: 20}}>
+                    <table style={{width: '100%', marginTop: 30}}>
                         <tbody>
                         <tr>
-                            <td style={{width: '50%'}} align="right" valign="top">
+                            <td style={{width: '65%'}} align="right" valign="top">
                                 <MyMapComponent isMarkerShown
                                                 googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
                                                 loadingElement={<div style={{height: `100%`}}/>}
@@ -238,20 +242,26 @@ class Page2ApplyGoals extends Component {
                                                 markers={this.state.markers}
                                 />
                             </td>
-                            <td style={{width: '10%', paddingLeft: 20}} align="left" valign="top">
+                            <td style={{width: '35%', paddingLeft: 30}} align="left" valign="top">
                                 {
                                     Object.keys(ROUTE_COLORS).map(k =>
                                         <div key={k} style={{color: ROUTE_COLORS[k]}}>
-                                            <div style={{width:24, display:'inline-block'}}>
-                                                <FontAwesomeIcon icon={ROUTE_ICONS[k]}/></div>{' '}{k}
+                                            <div style={{width: 24, display: 'inline-block'}}>
+                                                {
+                                                    ROUTE_ICONS[k] === 'uber'
+                                                        ? <img src={uberLogo} style={{width: 20}}/>
+                                                        : <FontAwesomeIcon icon={ROUTE_ICONS[k]}/>
+                                                }
+                                            </div>
+                                            {' '}{k}
                                         </div>
                                     )
                                 }
-                            </td>
-                            <td style={{width: '40%'}} align="left" valign="top">
-                                <p>Calories: <b>{(cal * 100 | 0) / 100}</b></p>
-                                <p>Cost: <b>${(cost * 100 | 0) / 100}</b></p>
-                                <p>Total Duration: <b>{duration / 60 | 0} min</b></p>
+                                <div style={{paddingTop:130}} className={'summary'}>
+                                    <p>Calories: <b>{(cal * 100 | 0) / 100}</b></p>
+                                    <p>Cost: <b>${(cost * 100 | 0) / 100}</b></p>
+                                    <p>Total Duration: <b>{duration / 60 | 0} min</b></p>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
