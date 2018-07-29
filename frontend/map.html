@@ -21,26 +21,64 @@
   <body>
     <div id="map"></div>
     <script>
+      //input calculated travel Legs here like so
+      var dummyTravelLeg = {
+        //starbucks 1
+        start : {
+          lat: 37.77531,
+          lng: -122.4173843
+        },
+        // starbucks 2
+        end : {
+          lat: 37.775773,
+          lng: -122.4209535
+        },
+        method: 'WALKING'
+      }
+
+      var mockPlaces = [
+        {
+          lat: 37.77531,
+          lng: -122.4173843
+        },
+        {
+          lat: 37.775773,
+          lng: -122.4209535
+        }
+      ]
+
       var map;
-      var directionsService = new google.maps.DirectionsService();
-      var directionsDisplay = new google.maps.DirectionsRenderer();
+      var directionsService;
+      var directionsDisplay;
+      //var placesService;
+
       function initMap() {
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay = new google.maps.DirectionsRenderer();
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 37.7749, lng: -122.4194},
           zoom: 14
         });
+        //place lookup for more complexity// probably not desireable
+        //placesService = new google.maps.places.PlacesService(map);
+        //placesService.nearbySearch(request, callback);
+        createMarkers(mockPlaces);
+        getRoute(dummyTravelLeg.start, dummyTravelLeg.end);
+        calcRoute(dummyTravelLeg);
       }
-      //input calculated travel Legs here like so
-      var dummyTravelLeg = {
-        start : {
-          latitude: 10,
-          longitide: 10
-        },
-        end : {
-          latitude: 10,
-          longitide: 10
-        },
-        method: 'WALKING'
+
+      function createMarkers(coords) {
+        var bounds = new google.maps.LatLngBounds();
+        var marker,i;
+        for (i = 0; i < coords.length; i++) { 
+          marker = new google.maps.Marker({
+            position: new google.maps.LatLng(coords[i].lat, coords[i].lng),
+            map: map
+          });
+          bounds.extend(coords[i]);
+        }
+        
+        map.fitBounds(bounds);
       }
 
       function calcRoute(leg) {
@@ -57,8 +95,41 @@
       }
 
       function getRoute(start, end) {
+        // coord.co request
+        $.get('https://api.coord.co/v1/routing/route?origin_latitude=' + start.lat + '&origin_longitude=' + start.lng
+          + '&destination_latitude=' + end.lat + '&destination_longitude=' + end.lng
+          + '&modes=&num_options=3&priority=soon&time=&time_mode=depart&bike_systems=&access_key=iZlC7r9ybCya_HS4BsasHMQV5kPqFSNpsSZdu8C8ANE',
+          function(req,res) {
+            //coord.co response
+            //console.log(JSON.stringify(req));
+            //switch by trip type?
+            var routeColors = [ "#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF"]//R,B,G,P,O 
+            var tempColorCount = 0;
+            var routePath;
+            var trips = req.trips;
+            trips.forEach( function(el){
+              el.legs.forEach(function(el){
+                 console.log(JSON.stringify(el));
+                routePath = new google.maps.Polyline({
+                    map: map,
+                    path: transformCoordLegtoGooglePath(el.geometry.coordinates),
+                    strokeColor: routeColors[tempColorCount],
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+                tempColorCount++;
+              });
+            });
+        });
+      }
 
-          $.get('https://api.coord.co/v1/routing/route?origin_latitude='+ start.latitude'&origin_longitude=-77.06913&destination_latitude=38.87643&destination_longitude=-77.00399&modes=&num_options=3&priority=soon&time=&time_mode=depart&bike_systems=&access_key=')
+      function transformCoordLegtoGooglePath(legs){
+        var googleCoords = [];
+        for ( var i = 0; i < legs.length; i++){
+          
+          googleCoords[i] = new google.maps.LatLng(legs[i][1], legs[i][0]);//swapped lat/long
+        }
+        return googleCoords;
       }
 
 
