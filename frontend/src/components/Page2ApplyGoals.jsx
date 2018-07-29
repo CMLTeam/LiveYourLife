@@ -38,10 +38,10 @@ const ROUTE_COLORS = {
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
     <GoogleMap
-        defaultZoom={8}
-        defaultCenter={{lat: -34.397, lng: 150.644}}
+        defaultZoom={14}
+        defaultCenter={{lat: 37.780709, lng: -122.420925}}
     >
-        {props.isMarkerShown && <Marker position={{lat: -34.397, lng: 150.644}}/>}
+        {/*{props.isMarkerShown && <Marker position={{lat: -34.397, lng: 150.644}}/>}*/}
         {props.lines && props.lines.map((l,i) =>
             <Polyline
                 key={i}
