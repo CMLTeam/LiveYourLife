@@ -38,7 +38,7 @@
       }
 
       var mockPlaces = []
-
+	  var timeline = ['9am-10am', '11-30am', '1pm - 3pm', '5pm']	
       var map;
       var directionsService;
       var directionsDisplay;
@@ -51,10 +51,14 @@
       function initMap() {
         directionsService = new google.maps.DirectionsService();
         directionsDisplay = new google.maps.DirectionsRenderer();
-        map = new google.maps.Map(document.getElementById('map'), {
+		var myOptions = {
+          zoom: 14,
           center: {lat: 37.7749, lng: -122.4194},
-          zoom: 14
-        });
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById('map'), myOptions);
+		
+		
         //place lookup for more complexity// probably not desireable
         //placesService = new google.maps.places.PlacesService(map);
         //placesService.nearbySearch(request, callback);
@@ -67,11 +71,16 @@
         var bounds = new google.maps.LatLngBounds();
         var marker,i;
         for (i = 0; i < coords.length; i++) { 
-		  console.error(coords.length)
+		  console.error(i);	
           marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords[i].lat, coords[i].lng),
             map: map,
-			icon: 'icons/b' + (i+1) + '.png'
+			icon: 'icons/b' + (i+1) + '.png',
+			label: {
+				text: timeline[i],
+				color: "red"
+			},
+			title:timeline[i]
           });
           bounds.extend(coords[i]);
         }
@@ -105,9 +114,10 @@
             var routePath;
             var trips = req.trips;
             trips.forEach( function(el){
+			//console.log(JSON.stringify(el));
               el.legs.forEach(function(el){
-                console.log(JSON.stringify(el));
-
+                console.error(JSON.stringify(el.geometry.coordinates));
+				mockPlaces.push(JSON.parse(JSON.stringify(new google.maps.LatLng(el.geometry.coordinates[0][1], el.geometry.coordinates[0][0])))); 
                 routePath = new google.maps.Polyline({
                     map: map,
                     path: transformCoordLegtoGooglePath(el.geometry.coordinates),
@@ -117,6 +127,11 @@
                 });
                 tempColorCount++;
               });
+			  last_el = el.legs[el.legs.length -1];
+			  console.log(last_el);
+			  last_coord_of_last_el = last_el.geometry.coordinates[last_el.geometry.coordinates.length-1];
+			  console.log(last_coord_of_last_el);
+			  mockPlaces.push(JSON.parse(JSON.stringify(new google.maps.LatLng(last_coord_of_last_el[1], last_coord_of_last_el[0])))); 
             });
 			createMarkers(mockPlaces);
         });
@@ -127,7 +142,6 @@
         for ( var i = 0; i < legs.length; i++){      
           googleCoords[i] = new google.maps.LatLng(legs[i][1], legs[i][0]);//swapped lat/long
         }
-		mockPlaces.push(JSON.parse(JSON.stringify(googleCoords[0]))); 
         return googleCoords;
       }
 
