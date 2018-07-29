@@ -60,7 +60,7 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
                 options={{
                     strokeColor: l.color,
                     strokeOpacity: 1.0,
-                    strokeWeight: 2
+                    strokeWeight: 4
                 }}
                 path={l.path}
             />
@@ -123,11 +123,11 @@ class Page2ApplyGoals extends Component {
         routes.sort((a, b) => a.cost - b.cost); // cost asc
         let n = (routes.length * maxPrice / 100) | 0;
         routes = routes.slice(0, Math.max(n, 1));
-        console.info(111, n, routes)
+        // console.info(111, n, routes)
         routes.sort((a, b) => a.cal - b.cal); // cal asc
         n = (routes.length * minCalories / 100) | 0;
         routes = routes.slice(0, Math.max(n, 1));
-        console.info(222, n, routes)
+        // console.info(222, n, routes)
         routes.sort((a, b) => a.duration - b.duration); // duration asc
         return routes[0];
     };
