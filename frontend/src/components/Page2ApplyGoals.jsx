@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
-import Slider, {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import SliderRow from "./SliderRow";
 
@@ -72,7 +71,8 @@ class Page2ApplyGoals extends Component {
                 }
 
                 <br/>
-                <Link to={'/page3'}>Next</Link>
+                <Link to={'/'}>Prev</Link>
+                {' '}<Link to={'/page3'}>Next</Link>
             </div>
         );
     }
