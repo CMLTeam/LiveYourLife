@@ -7,21 +7,25 @@ import Routes from './Routes';
 
 const PRESETS = {
     'fastest': {
+        'route': 0,
         'Price': 90,
         'Calories': 10,
         'Distance': 20
     },
     'cheapest': {
+        'route': 1,
         'Price': 20,
         'Calories': 70,
         'Distance': 70
     },
     'healthiest': {
+        'route': 2,
         'Price': 50,
         'Calories': 90,
         'Distance': 10
     },
     'balanced': {
+        'route': 3,
         'Price': 50,
         'Calories': 50,
         'Distance': 50
@@ -57,11 +61,16 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
 
 class Page2ApplyGoals extends Component {
     state = {
-        preset: ''
+        preset: '',
+        lines: []
     };
 
     selectPreset = (preset) => {
-        this.setState({preset: preset, presetValues: PRESETS[preset]})
+        this.setState({
+            preset: preset,
+            presetValues: PRESETS[preset],
+            lines: this.coordRouteToLines(Routes[PRESETS[preset].route])
+        })
     };
 
     coordTripToLines = (trip) => {
@@ -120,28 +129,32 @@ class Page2ApplyGoals extends Component {
                     </div>
                 }
 
-                <table style={{width: '100%'}}>
-                    <tbody>
-                    <tr>
-                        <td style={{width: '50%'}} align="right" valign="top">
-                            <MyMapComponent isMarkerShown
-                                            googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
-                                            loadingElement={<div style={{height: `100%`}}/>}
-                                            containerElement={<div style={{height: `400px`, width: '600px'}}/>}
-                                            mapElement={<div style={{height: `100%`}}/>}
-                                            lines={this.coordRouteToLines(Routes[0])}
-                            />
-                        </td>
-                        <td style={{width: '50%', padding:5}} align="left" valign="top">
-                            {
-                                Object.keys(ROUTE_COLORS).map(k =>
-                                    <div style={{color: ROUTE_COLORS[k]}}>{k}</div>
-                                )
-                            }
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                {
+                    this.state.lines.length
+                    &&
+                    <table style={{width: '100%'}}>
+                        <tbody>
+                        <tr>
+                            <td style={{width: '50%'}} align="right" valign="top">
+                                <MyMapComponent isMarkerShown
+                                                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
+                                                loadingElement={<div style={{height: `100%`}}/>}
+                                                containerElement={<div style={{height: `400px`, width: '600px'}}/>}
+                                                mapElement={<div style={{height: `100%`}}/>}
+                                                lines={this.state.lines}
+                                />
+                            </td>
+                            <td style={{width: '50%', padding:5}} align="left" valign="top">
+                                {
+                                    Object.keys(ROUTE_COLORS).map(k =>
+                                        <div style={{color: ROUTE_COLORS[k]}}>{k}</div>
+                                    )
+                                }
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                }
 
                 <br/>
                 <Link to={'/'}>Prev</Link>
