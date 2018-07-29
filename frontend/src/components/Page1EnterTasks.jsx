@@ -20,11 +20,13 @@ class Page1EnterTasks extends Component {
         const uid = event.target.id;
         if (event.key === 'Enter') {
             const tasks = this.state.tasks.map(e => e.uid === uid ? this.parseTask(e) : e);
-            let t = this.newTask();
-            tasks.push(t);
-            setTimeout(() => {
-                document.getElementById(t.uid).focus();
-            }, 100);
+            if (tasks.filter(t => t.valid === false).length === 0) {
+                let t = this.newTask();
+                tasks.push(t);
+                setTimeout(() => {
+                    document.getElementById(t.uid).focus();
+                }, 100);
+            }
             this.setState({tasks})
         }
     };
@@ -83,7 +85,10 @@ class Page1EnterTasks extends Component {
 
         location = this.parseLocation(action);
 
-        return {...task, isRaw: false, action, location, duration, time};
+        if (!location)
+            return {...task, valid: false};
+
+        return {...task, valid: true, isRaw: false, action, location, duration, time};
     };
 
     parseAction = (v) => {
@@ -143,6 +148,7 @@ class Page1EnterTasks extends Component {
                             {index + 1}.
                             {t.isRaw ?
                                 <input type={'text'}
+                                       className={t.valid === false ? 'invalid' : ''}
                                        placeholder={'Enter your task'}
                                        id={t.uid}
                                        value={t.text}
@@ -158,7 +164,9 @@ class Page1EnterTasks extends Component {
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>DURATION</span>
                                         {' '}
-                                        <input type={'text'} value={t.duration.value}
+                                        <input type={'text'}
+                                               style={{width: 30}}
+                                               value={t.duration.value}
                                                onChange={this.changeDurationValue.bind(this, t.uid)}/>
                                         <select value={t.duration.unit}
                                                 onChange={this.changeDurationUnit.bind(this, t.uid)}>

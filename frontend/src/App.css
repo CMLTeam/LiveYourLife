@@ -14,3 +14,7 @@
 .parsed-element-name {
     color: #aaa;
 }
+
+.task-item .invalid {
+    background: #faa;
+}
