@@ -79,7 +79,6 @@ class Page1EnterTasks extends Component {
     };
 
     parseDuration = (v) => {
-        console.info(222, v)
         if (!v)
             return {value: 1, unit: 'hr'};
 
@@ -97,6 +96,8 @@ class Page1EnterTasks extends Component {
     };
 
     parseTime = (v) => {
+        if (!v)
+            return 'ANY';
         return v;
     };
 
@@ -107,7 +108,7 @@ class Page1EnterTasks extends Component {
     render() {
         return (
             <div>
-                Enter Tasks
+                <h2>Enter Tasks</h2>
 
                 <div id={'task-list'}>
                     {this.state.tasks.map((t, index) =>
