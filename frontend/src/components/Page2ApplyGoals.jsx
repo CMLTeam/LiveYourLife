@@ -31,15 +31,15 @@ const PRESETS = {
 const ROUTE_COLORS = {
     walk: "#00FF00",
     bike: "#0000FF",
-    aaa: "#FF0000",
+    bus: "#00FFFF",
+    metro: "#FF0000",
     unknown: "#FFFF00",
-    ccc: "#00FFFF"
 };
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
     <GoogleMap
-        defaultZoom={14}
-        defaultCenter={{lat: 37.780709, lng: -122.420925}}
+        defaultZoom={13}
+        defaultCenter={{lat: 37.765512, lng: -122.418178}}
     >
         {/*{props.isMarkerShown && <Marker position={{lat: -34.397, lng: 150.644}}/>}*/}
         {props.lines && props.lines.map((l,i) =>
@@ -75,7 +75,15 @@ class Page2ApplyGoals extends Component {
             }
         })
     };
-
+    coordRouteToLines = (route) => {
+        const lines = [];
+        route.trips.forEach(t => {
+            this.coordTripToLines(t).forEach(l => {
+                lines.push(l)
+            })
+        });
+        return lines;
+    };
     render() {
         return (
             <div>
@@ -118,7 +126,17 @@ class Page2ApplyGoals extends Component {
                                 containerElement={<div style={{height: `400px`, width: '600px'}}/>}
                                 mapElement={<div style={{height: `100%`}}/>}
 
-                                lines={this.coordTripToLines(Routes[0].trips[0])}
+                                lines={this.coordRouteToLines(Routes[0])}
+                />
+
+                <MyMapComponent isMarkerShown
+                    // googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
+                                loadingElement={<div style={{height: `100%`}}/>}
+                                containerElement={<div style={{height: `400px`, width: '600px'}}/>}
+                                mapElement={<div style={{height: `100%`}}/>}
+
+                                lines={this.coordRouteToLines(Routes[1])}
                 />
 
                 <br/>
