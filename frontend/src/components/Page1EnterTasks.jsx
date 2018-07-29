@@ -17,7 +17,13 @@ class Page1EnterTasks extends Component {
     onTaskKeyPress = (event) => {
         const uid = event.target.id;
         if (event.key === 'Enter') {
-            this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, isRaw: false} : e)})
+            const tasks = this.state.tasks.map(e => e.uid === uid ? {...e, isRaw: false} : e);
+            let uid1 = this.newUid();
+            tasks.push({isRaw: true, text: '', uid: uid1});
+            setTimeout(() => {
+                document.getElementById(uid1).focus();
+            }, 100);
+            this.setState({tasks})
         }
     };
 
@@ -27,8 +33,9 @@ class Page1EnterTasks extends Component {
                 Enter Tasks
 
                 <div id={'task-list'}>
-                    {this.state.tasks.map(t =>
+                    {this.state.tasks.map((t, index) =>
                         <div key={t.uid} className={'task-item'}>
+                            {index + 1}.
                             {t.isRaw ?
                                 <input type={'text'}
                                        placeholder={'Enter your task'}
@@ -38,7 +45,7 @@ class Page1EnterTasks extends Component {
                                        onKeyPress={this.onTaskKeyPress}
                                 />
                                 :
-                                <spa>Parsed: {t.text}</spa>
+                                <span>Parsed: {t.text}</span>
                             }
                         </div>)
                     }
