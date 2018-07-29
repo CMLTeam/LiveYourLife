@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 
 class Page1EnterTasks extends Component {
+    newTask = () => {
+        return {isRaw: true, text: '', uid: this.newUid()};
+    };
+
     state = {
-        tasks: [
-            {isRaw: true, text: '', uid: this.newUid()}
-        ]
+        tasks: [this.newTask()]
     };
 
     onTaskTextChange = (event) => {
@@ -18,10 +20,10 @@ class Page1EnterTasks extends Component {
         const uid = event.target.id;
         if (event.key === 'Enter') {
             const tasks = this.state.tasks.map(e => e.uid === uid ? this.parseTask(e) : e);
-            let uid1 = this.newUid();
-            tasks.push({isRaw: true, text: '', uid: uid1});
+            let t = this.newTask();
+            tasks.push(t);
             setTimeout(() => {
-                document.getElementById(uid1).focus();
+                document.getElementById(t.uid).focus();
             }, 100);
             this.setState({tasks})
         }
@@ -127,7 +129,10 @@ class Page1EnterTasks extends Component {
     };
 
     removeTask = (uid) => {
-        this.setState({tasks: this.state.tasks.filter(e => e.uid !== uid)})
+        let tasks = this.state.tasks.filter(e => e.uid !== uid);
+        if (tasks.length === 0)
+            tasks = [this.newTask()];
+        this.setState({tasks})
     };
 
     render() {
@@ -183,7 +188,8 @@ class Page1EnterTasks extends Component {
                                             <option value={11}>11</option>
                                             <option value={12}>12</option>
                                         </select>
-                                        {t.time.hour > 0 &&
+                                        {t.time.hour > 0
+                                        &&
                                         <select value={t.time.ampm}
                                                 onChange={this.changeTimeAmpm.bind(this, t.uid)}>
                                             <option value={'am'}>AM</option>
