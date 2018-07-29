@@ -4,6 +4,7 @@ import 'rc-slider/assets/index.css';
 import SliderRow from "./SliderRow";
 import {withScriptjs, withGoogleMap, GoogleMap, Marker, Polyline} from "react-google-maps";
 import Routes from './Routes';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const PRICE = 'Max Price';
 const CALORIES = 'Min Calories';
@@ -40,6 +41,13 @@ const ROUTE_COLORS = {
     // unknown: "#FFFF00",
 };
 
+const ROUTE_ICONS = {
+    walk: "walking",
+    bike: "bicycle",
+    bus: "bus",
+    metro: "subway",
+};
+
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
     <GoogleMap
         defaultZoom={13}
@@ -64,6 +72,10 @@ class Page2ApplyGoals extends Component {
         preset: '',
         lines: []
     };
+
+    componentDidMount() {
+        this.selectPreset(balanced);
+    }
 
     selectPreset = (preset) => {
         let presetValues = PRESETS[preset];
@@ -145,8 +157,13 @@ class Page2ApplyGoals extends Component {
         const {cal, cost, duration} = this.state;
         return (
             <div>
-                <h2>Best Plan For You</h2>
+                <h2>Live your life</h2>
 
+                <label><input type={'radio'} name={'preset'}
+                              checked={this.state.preset === balanced}
+                              onChange={this.selectPreset.bind(this, balanced)}/> balanced for you</label>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === fastest}
                               onChange={this.selectPreset.bind(this, fastest)}/> fastest</label>
@@ -161,10 +178,6 @@ class Page2ApplyGoals extends Component {
                               checked={this.state.preset === healthiest}
                               onChange={this.selectPreset.bind(this, healthiest)}/> healthiest</label>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <label><input type={'radio'} name={'preset'}
-                              checked={this.state.preset === balanced}
-                              onChange={this.selectPreset.bind(this, balanced)}/> balanced</label>
 
                 {
                     this.state.preset
@@ -178,7 +191,7 @@ class Page2ApplyGoals extends Component {
                                            onChange={(v) => {
                                                let {presetValues} = this.state;
                                                presetValues = {...presetValues, [p]: v};
-                                               console.info(333,presetValues)
+                                               console.info(333, presetValues)
                                                this.setState({presetValues});
                                                this.selectPresetByValues(presetValues);
                                            }}
@@ -206,7 +219,10 @@ class Page2ApplyGoals extends Component {
                             <td style={{width: '10%', paddingLeft: 20}} align="left" valign="top">
                                 {
                                     Object.keys(ROUTE_COLORS).map(k =>
-                                        <div key={k} style={{color: ROUTE_COLORS[k]}}>{k}</div>
+                                        <div key={k} style={{color: ROUTE_COLORS[k]}}>
+                                            <div style={{width:24, display:'inline-block'}}>
+                                                <FontAwesomeIcon icon={ROUTE_ICONS[k]}/></div>{' '}{k}
+                                        </div>
                                     )
                                 }
                             </td>
