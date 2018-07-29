@@ -7,24 +7,26 @@ import Routes from './Routes';
 
 const PRICE = 'Max Price';
 const CALORIES = 'Min Calories';
+
+const fastest = 'fastest';
+const cheapest = 'cheapest';
+const healthiest = 'healthiest';
+const balanced = 'balanced';
+
 const PRESETS = {
-    'fastest': {
-        'route': 0,
+    [fastest]: {
         [PRICE]: 95,
         [CALORIES]: 5,
     },
-    'cheapest': {
-        'route': 1,
+    [cheapest]: {
         [PRICE]: 10,
         [CALORIES]: 20,
     },
-    'healthiest': {
-        'route': 2,
+    [healthiest]: {
         [PRICE]: 30,
         [CALORIES]: 90,
     },
-    'balanced': {
-        'route': 3,
+    [balanced]: {
         [PRICE]: 50,
         [CALORIES]: 50,
     },
@@ -64,16 +66,47 @@ class Page2ApplyGoals extends Component {
     };
 
     selectPreset = (preset) => {
-        const route = Routes[PRESETS[preset].route];
+        let presetValues = PRESETS[preset];
+        const route = this.determineRouteByPresetName(preset);
         const {cal, cost, duration} = route;
         this.setState({
             preset: preset,
-            presetValues: PRESETS[preset],
+            presetValues,
             lines: this.coordRouteToLines(route),
             cal,
             cost,
             duration
         })
+    };
+
+    determineRouteByPresetName = (preset) => {
+        let routes = [...Routes];
+        if (preset === fastest) {
+            routes.sort((a, b) => a.duration - b.duration); // duration asc
+            return routes[0];
+        } else if (preset === cheapest) {
+            routes.sort((a, b) => a.cost - b.cost); // cost asc
+            return routes[0];
+        } else if (preset === healthiest) {
+            routes.sort((a, b) => - (a.cal - b.cal)); // cal desc
+            return routes[0];
+        } else if (preset === balanced)
+            return this.determineRoute(50, 50);
+    };
+
+    determineRoute = (maxPrice, minCalories) => {
+        // return Routes[0];
+        let routes = [...Routes];
+        routes.sort((a, b) => a.cost - b.cost); // cost asc
+        let n = (routes.length * maxPrice / 100) | 0;
+        routes = routes.slice(0, Math.max(n,1));
+        console.info(111,n,routes)
+        routes.sort((a, b) => a.cal - b.cal); // cal asc
+        n = (routes.length * minCalories / 100) | 0;
+        routes = routes.slice(0, Math.max(n,1));
+        console.info(222,n,routes)
+        routes.sort((a, b) => a.duration - b.duration); // duration asc
+        return routes[0];
     };
 
     coordTripToLines = (trip) => {
@@ -104,23 +137,23 @@ class Page2ApplyGoals extends Component {
                 <h2>Best Plan For You</h2>
 
                 <label><input type={'radio'} name={'preset'}
-                              checked={this.state.preset === 'fastest'}
-                              onChange={this.selectPreset.bind(this, 'fastest')}/> fastest</label>
+                              checked={this.state.preset === fastest}
+                              onChange={this.selectPreset.bind(this, fastest)}/> fastest</label>
 
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
-                              checked={this.state.preset === 'cheapest'}
-                              onChange={this.selectPreset.bind(this, 'cheapest')}/> cheapest</label>
+                              checked={this.state.preset === cheapest}
+                              onChange={this.selectPreset.bind(this, cheapest)}/> cheapest</label>
 
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
-                              checked={this.state.preset === 'healthiest'}
-                              onChange={this.selectPreset.bind(this, 'healthiest')}/> healthiest</label>
+                              checked={this.state.preset === healthiest}
+                              onChange={this.selectPreset.bind(this, healthiest)}/> healthiest</label>
 
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <label><input type={'radio'} name={'preset'}
-                              checked={this.state.preset === 'balanced'}
-                              onChange={this.selectPreset.bind(this, 'balanced')}/> balanced</label>
+                              checked={this.state.preset === balanced}
+                              onChange={this.selectPreset.bind(this, balanced)}/> balanced</label>
 
                 {
                     this.state.preset
@@ -128,7 +161,10 @@ class Page2ApplyGoals extends Component {
                     <div>
                         {
                             [PRICE, CALORIES].map(p =>
-                                <SliderRow title={p} key={this.state.preset + p} value={this.state.presetValues[p]}/>
+                                <SliderRow title={p}
+                                           key={this.state.preset + p}
+                                           value={this.state.presetValues[p]}
+                                />
                             )
                         }
                     </div>
@@ -152,7 +188,7 @@ class Page2ApplyGoals extends Component {
                             <td style={{width: '10%', paddingLeft: 20}} align="left" valign="top">
                                 {
                                     Object.keys(ROUTE_COLORS).map(k =>
-                                        <div style={{color: ROUTE_COLORS[k]}}>{k}</div>
+                                        <div key={k} style={{color: ROUTE_COLORS[k]}}>{k}</div>
                                     )
                                 }
                             </td>
