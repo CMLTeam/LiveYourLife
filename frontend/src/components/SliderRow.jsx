@@ -7,10 +7,6 @@ class SliderRow extends Component {
         value: 0
     };
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount () {
         this.setState({value: this.props.value})
     }

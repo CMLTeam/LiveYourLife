@@ -2,13 +2,17 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 
 class Page1EnterTasks extends Component {
+    state = {
+        tasks: []
+    };
+
     newTask = () => {
         return {isRaw: true, text: '', uid: this.newUid()};
     };
 
-    state = {
-        tasks: [this.newTask()]
-    };
+    componentDidMount() {
+        this.restoreTasks();
+    }
 
     onTaskTextChange = (event) => {
         const text = event.target.value;
@@ -27,28 +31,52 @@ class Page1EnterTasks extends Component {
                     document.getElementById(t.uid).focus();
                 }, 100);
             }
-            this.setState({tasks})
+            this.setState({tasks});
+            this.rememberTasks(tasks);
         }
     };
 
     changeDurationValue = (uid, event) => {
         const value = event.target.value | 0;
-        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration: {...e.duration, value}} : e)})
+        let tasks = this.state.tasks.map(e => e.uid === uid ? {...e, duration: {...e.duration, value}} : e);
+        this.setState({tasks});
+        this.rememberTasks(tasks);
     };
 
     changeDurationUnit = (uid, event) => {
         const unit = event.target.value;
-        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration: {...e.duration, unit}} : e)})
+        let tasks = this.state.tasks.map(e => e.uid === uid ? {...e, duration: {...e.duration, unit}} : e);
+        this.setState({tasks});
+        this.rememberTasks(tasks);
     };
 
     changeTimeHour = (uid, event) => {
         const hour = event.target.value | 0;
-        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, time: {...e.time, hour}} : e)})
+        let tasks = this.state.tasks.map(e => e.uid === uid ? {...e, time: {...e.time, hour}} : e);
+        this.setState({tasks});
+        this.rememberTasks(tasks);
     };
 
     changeTimeAmpm = (uid, event) => {
         const ampm = event.target.value;
-        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, time: {...e.time, ampm}} : e)})
+        let tasks = this.state.tasks.map(e => e.uid === uid ? {...e, time: {...e.time, ampm}} : e);
+        this.setState({tasks});
+        this.rememberTasks(tasks);
+    };
+
+    rememberTasks = (tasks) => {
+        tasks = tasks.filter(t => !t.isRaw);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    };
+
+    restoreTasks = () => {
+        let tasksStr = localStorage.getItem('tasks');
+        let tasks = [];
+        if (tasksStr) {
+            tasks = JSON.parse(tasksStr);
+        }
+        tasks.push(this.newTask());
+        this.setState({tasks});
     };
 
     parseTask = (task) => {
@@ -153,7 +181,7 @@ class Page1EnterTasks extends Component {
             <div>
                 <h2>Enter Tasks</h2>
 
-                <div id={'task-list'}>
+                <div className={'task-list'}>
                     {this.state.tasks.map((t, index) =>
                         <div key={t.uid} className={'task-item'}>
                             {index + 1}.
