@@ -34,7 +34,7 @@ const PRESETS = {
 };
 
 const ROUTE_COLORS = {
-    walk: "#00FF00",
+    walk: "#FF7000",
     bike: "#0000FF",
     bus: "#008888",
     metro: "#FF0000",
