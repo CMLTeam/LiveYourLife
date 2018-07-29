@@ -31,9 +31,9 @@ const PRESETS = {
 const ROUTE_COLORS = {
     walk: "#00FF00",
     bike: "#0000FF",
-    bus: "#00FFFF",
+    bus: "#008888",
     metro: "#FF0000",
-    unknown: "#FFFF00",
+    // unknown: "#FFFF00",
 };
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
@@ -42,7 +42,7 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
         defaultCenter={{lat: 37.765512, lng: -122.418178}}
     >
         {/*{props.isMarkerShown && <Marker position={{lat: -34.397, lng: 150.644}}/>}*/}
-        {props.lines && props.lines.map((l,i) =>
+        {props.lines && props.lines.map((l, i) =>
             <Polyline
                 key={i}
                 options={{
@@ -68,7 +68,7 @@ class Page2ApplyGoals extends Component {
         const {legs} = trip;
         return legs.map(leg => {
             return {
-                color: ROUTE_COLORS[leg.mode || 'unknown'],
+                color: ROUTE_COLORS[leg.mode],
                 path: leg.geometry.coordinates.map(c => {
                     return {lat: c[1], lng: c[0]}
                 })
@@ -84,6 +84,7 @@ class Page2ApplyGoals extends Component {
         });
         return lines;
     };
+
     render() {
         return (
             <div>
@@ -119,25 +120,28 @@ class Page2ApplyGoals extends Component {
                     </div>
                 }
 
-                <MyMapComponent isMarkerShown
-                    // googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
-                                loadingElement={<div style={{height: `100%`}}/>}
-                                containerElement={<div style={{height: `400px`, width: '600px'}}/>}
-                                mapElement={<div style={{height: `100%`}}/>}
-
-                                lines={this.coordRouteToLines(Routes[0])}
-                />
-
-                <MyMapComponent isMarkerShown
-                    // googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
-                                loadingElement={<div style={{height: `100%`}}/>}
-                                containerElement={<div style={{height: `400px`, width: '600px'}}/>}
-                                mapElement={<div style={{height: `100%`}}/>}
-
-                                lines={this.coordRouteToLines(Routes[1])}
-                />
+                <table style={{width: '100%'}}>
+                    <tbody>
+                    <tr>
+                        <td style={{width: '50%'}} align="right" valign="top">
+                            <MyMapComponent isMarkerShown
+                                            googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC1IqGZUiXvjKfTUc7yDim24FaUwWEe4ro"
+                                            loadingElement={<div style={{height: `100%`}}/>}
+                                            containerElement={<div style={{height: `400px`, width: '600px'}}/>}
+                                            mapElement={<div style={{height: `100%`}}/>}
+                                            lines={this.coordRouteToLines(Routes[0])}
+                            />
+                        </td>
+                        <td style={{width: '50%', padding:5}} align="left" valign="top">
+                            {
+                                Object.keys(ROUTE_COLORS).map(k =>
+                                    <div style={{color: ROUTE_COLORS[k]}}>{k}</div>
+                                )
+                            }
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
                 <br/>
                 <Link to={'/'}>Prev</Link>
