@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import 'rc-slider/assets/index.css';
 import SliderRow from "./SliderRow";
-import {withScriptjs, withGoogleMap, GoogleMap, Marker, Polyline} from "react-google-maps";
+import {GoogleMap, Marker, Polyline, withGoogleMap, withScriptjs} from "react-google-maps";
 import Routes from './Routes';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 const PRICE = 'Max Price';
 const CALORIES = 'Min Calories';
@@ -55,8 +55,8 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
     >
         {/*<Marker position={{lat: 37.765512, lng: -122.418178}}/>*/}
         {props.markers && props.markers.map((m, i) => {
-                console.info(55, m, i)
                 return <Marker key={i}
+                               label={String.fromCharCode(65 + i)}
                                position={m.position}/>
             }
         )}
