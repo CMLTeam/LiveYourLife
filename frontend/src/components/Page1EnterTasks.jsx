@@ -28,13 +28,23 @@ class Page1EnterTasks extends Component {
     };
 
     changeDurationValue = (uid, event) => {
-        const value = event.target.value|0;
-        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration : {...e.duration, value}} : e)})
+        const value = event.target.value | 0;
+        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration: {...e.duration, value}} : e)})
     };
 
     changeDurationUnit = (uid, event) => {
         const unit = event.target.value;
-        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration : {...e.duration, unit}} : e)})
+        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration: {...e.duration, unit}} : e)})
+    };
+
+    changeTimeHour = (uid, event) => {
+        const hour = event.target.value | 0;
+        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, time: {...e.time, hour}} : e)})
+    };
+
+    changeTimeAmpm = (uid, event) => {
+        const ampm = event.target.value;
+        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, time: {...e.time, ampm}} : e)})
     };
 
     parseTask = (task) => {
@@ -46,7 +56,7 @@ class Page1EnterTasks extends Component {
         // ACTION (at|around) TIME
         // ACTION
 
-        let action, duration, time;
+        let location, action, duration, time;
 
         const FOR = /\s+for\s+/i;
         const AT = /\s+at\s+/i;
@@ -69,13 +79,20 @@ class Page1EnterTasks extends Component {
             }
         }
 
-        return {...task, isRaw: false, action, duration, time};
+        location = this.parseLocation(action);
+
+        return {...task, isRaw: false, action, location, duration, time};
     };
 
     parseAction = (v) => {
         // go to dentist
         // visit coffee shop
         return v;
+    };
+
+    parseLocation = (v) => {
+        return v.replace(/^go to/i, '')
+            .replace(/^visit/i, '');
     };
 
     parseDuration = (v) => {
@@ -97,8 +114,16 @@ class Page1EnterTasks extends Component {
 
     parseTime = (v) => {
         if (!v)
-            return 'ANY';
-        return v;
+            return {hour: -1};
+
+        v = v.trim();
+
+        let match;
+
+        if (match = /(\d+)\s*(am|pm)/i.exec(v))
+            return {hour: match[1], ampm: match[2]};
+
+        return {hour: 0};
     };
 
     removeTask = (uid) => {
@@ -125,8 +150,8 @@ class Page1EnterTasks extends Component {
                                 :
                                 <div style={{display: 'inline-block'}}>
                                     <div className={'parsed-element'}>
-                                        <span className={'parsed-element-name'}>ACTION</span>
-                                        {' '}{t.action}
+                                        <span className={'parsed-element-name'}>LOCATION</span>
+                                        {' '}{t.location}
                                     </div>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>DURATION</span>
@@ -141,7 +166,30 @@ class Page1EnterTasks extends Component {
                                     </div>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>TIME</span>
-                                        {' '}{t.time}
+                                        {' '}
+                                        <select value={t.time.hour}
+                                                onChange={this.changeTimeHour.bind(this, t.uid)}>
+                                            <option value={-1}>ANY</option>
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                            <option value={3}>3</option>
+                                            <option value={4}>4</option>
+                                            <option value={5}>5</option>
+                                            <option value={6}>6</option>
+                                            <option value={7}>7</option>
+                                            <option value={8}>8</option>
+                                            <option value={9}>9</option>
+                                            <option value={10}>10</option>
+                                            <option value={11}>11</option>
+                                            <option value={12}>12</option>
+                                        </select>
+                                        {t.time.hour > 0 &&
+                                        <select value={t.time.ampm}
+                                                onChange={this.changeTimeAmpm.bind(this, t.uid)}>
+                                            <option value={'am'}>AM</option>
+                                            <option value={'pm'}>PM</option>
+                                        </select>
+                                        }
                                     </div>
                                 </div>
                             }
