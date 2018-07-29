@@ -65,11 +65,7 @@ class Page1EnterTasks extends Component {
         const FOR = /\s+for\s+/i;
         const AT = /\s+at\s+/i;
 
-        if (!FOR.test(text)) {
-            action = this.parseAction(text);
-            duration = this.parseDuration();
-            time = this.parseTime();
-        } else {
+        if (FOR.test(text)) {
             let parts = text.split(FOR);
             action = this.parseAction(parts[0]);
             let rest = parts[1];
@@ -81,6 +77,15 @@ class Page1EnterTasks extends Component {
                 duration = this.parseDuration(rest);
                 time = this.parseTime();
             }
+        } else if (AT.test(text)) {
+            let parts = text.split(AT);
+            action = this.parseAction(parts[0]);
+            duration = this.parseDuration();
+            time = this.parseTime(parts[1]);
+        } else {
+            action = this.parseAction(text);
+            duration = this.parseDuration();
+            time = this.parseTime();
         }
 
         location = this.parseLocation(action);
