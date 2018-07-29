@@ -38,7 +38,7 @@ class Page2ApplyGoals extends Component {
             <tbody>
             <tr>
                 <td style={{width: '20%'}}>{title}</td>
-                <td style={{width: '80%'}}><SliderT value={value}/></td>
+                <td style={{width: '80%'}}><SliderT defaultValue={value} onChange={(v)=>{console.info(111,v)}}/></td>
             </tr>
             </tbody>
         </table>
@@ -82,6 +82,8 @@ class Page2ApplyGoals extends Component {
                         }
                     </div>
                 }
+
+                <br/>
                 <Link to={'/page3'}>Next</Link>
             </div>
         );
