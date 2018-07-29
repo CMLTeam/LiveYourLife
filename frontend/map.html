@@ -37,16 +37,7 @@
         method: 'WALKING'
       }
 
-      var mockPlaces = [
-        {
-          lat: 37.77531,
-          lng: -122.4173843
-        },
-        {
-          lat: 37.775773,
-          lng: -122.4209535
-        }
-      ]
+      var mockPlaces = []
 
       var map;
       var directionsService;
@@ -67,7 +58,6 @@
         //place lookup for more complexity// probably not desireable
         //placesService = new google.maps.places.PlacesService(map);
         //placesService.nearbySearch(request, callback);
-        createMarkers(mockPlaces);
         // use price models to select mode??
         getRoute(dummyTravelLeg.start, dummyTravelLeg.end, "bike");
         calcRoute(dummyTravelLeg);
@@ -77,9 +67,11 @@
         var bounds = new google.maps.LatLngBounds();
         var marker,i;
         for (i = 0; i < coords.length; i++) { 
+		  console.error(coords.length)
           marker = new google.maps.Marker({
             position: new google.maps.LatLng(coords[i].lat, coords[i].lng),
-            map: map
+            map: map,
+			icon: 'icons/b' + (i+1) + '.png'
           });
           bounds.extend(coords[i]);
         }
@@ -99,9 +91,6 @@
           }
         });
       }
-	  $(document).ready(function () {
-		//your code here
-		});
       function getRoute(start, end, mode) {
         // coord.co request
         $.get('https://api.coord.co/v1/routing/route?origin_latitude=' + start.lat + '&origin_longitude=' + start.lng
@@ -117,7 +106,8 @@
             var trips = req.trips;
             trips.forEach( function(el){
               el.legs.forEach(function(el){
-                 console.log(JSON.stringify(el));
+                console.log(JSON.stringify(el));
+
                 routePath = new google.maps.Polyline({
                     map: map,
                     path: transformCoordLegtoGooglePath(el.geometry.coordinates),
@@ -128,15 +118,16 @@
                 tempColorCount++;
               });
             });
+			createMarkers(mockPlaces);
         });
       }
 
       function transformCoordLegtoGooglePath(legs){
         var googleCoords = [];
-        for ( var i = 0; i < legs.length; i++){
-          
+        for ( var i = 0; i < legs.length; i++){      
           googleCoords[i] = new google.maps.LatLng(legs[i][1], legs[i][0]);//swapped lat/long
         }
+		mockPlaces.push(JSON.parse(JSON.stringify(googleCoords[0]))); 
         return googleCoords;
       }
 
