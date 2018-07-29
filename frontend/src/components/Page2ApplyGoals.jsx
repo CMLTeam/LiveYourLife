@@ -259,7 +259,7 @@ class Page2ApplyGoals extends Component {
                                     )
                                 }
                                 <div style={{paddingTop:130}} className={'summary'}>
-                                    <p><FontAwesomeIcon icon={''}/> Calories: <b>{(cal * 100 | 0) / 100}</b></p>
+                                    <p><FontAwesomeIcon icon={'heartbeat'}/>&nbsp; Calories: <b>{(cal * 100 | 0) / 100}</b></p>
                                     <p><FontAwesomeIcon icon={'money-bill-alt'}/> Cost: <b>${(cost * 100 | 0) / 100}</b></p>
                                     <p><FontAwesomeIcon icon={'stopwatch'}/>&nbsp; Total Duration: <b>{duration / 60 | 0} min</b></p>
                                 </div>
