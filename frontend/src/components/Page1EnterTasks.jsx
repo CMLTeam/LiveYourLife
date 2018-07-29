@@ -27,6 +27,16 @@ class Page1EnterTasks extends Component {
         }
     };
 
+    changeDurationValue = (uid, event) => {
+        const value = event.target.value|0;
+        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration : {...e.duration, value}} : e)})
+    };
+
+    changeDurationUnit = (uid, event) => {
+        const unit = event.target.value;
+        this.setState({tasks: this.state.tasks.map(e => e.uid === uid ? {...e, duration : {...e.duration, unit}} : e)})
+    };
+
     parseTask = (task) => {
 
         const text = task.text;
@@ -43,6 +53,8 @@ class Page1EnterTasks extends Component {
 
         if (!FOR.test(text)) {
             action = this.parseAction(text);
+            duration = this.parseDuration();
+            time = this.parseTime();
         } else {
             let parts = text.split(FOR);
             action = this.parseAction(parts[0]);
@@ -50,9 +62,10 @@ class Page1EnterTasks extends Component {
             if (AT.test(rest)) {
                 let parts = text.split(AT);
                 duration = this.parseDuration(parts[0]);
-                time = this.parseLocation(parts[1])
+                time = this.parseTime(parts[1])
             } else {
                 duration = this.parseDuration(rest);
+                time = this.parseTime();
             }
         }
 
@@ -66,10 +79,24 @@ class Page1EnterTasks extends Component {
     };
 
     parseDuration = (v) => {
-        return v;
+        console.info(222, v)
+        if (!v)
+            return {value: 1, unit: 'hr'};
+
+        v = v.trim();
+
+        let match;
+
+        if (match = /(\d+)\s*(hr?|hours?)/i.exec(v))
+            return {value: match[1], unit: 'hr'};
+
+        if (match = /(\d+)\s*(min|m|minutes?)/i.exec(v))
+            return {value: match[1], unit: 'min'};
+
+        return {value: 0, unit: '?'};
     };
 
-    parseLocation = (v) => {
+    parseTime = (v) => {
         return v;
     };
 
@@ -95,14 +122,21 @@ class Page1EnterTasks extends Component {
                                        onKeyPress={this.onTaskKeyPress}
                                 />
                                 :
-                                <div style={{ display: 'inline-block' }}>
+                                <div style={{display: 'inline-block'}}>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>ACTION</span>
                                         {' '}{t.action}
                                     </div>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>DURATION</span>
-                                        {' '}{t.duration}
+                                        {' '}
+                                        <input type={'text'} value={t.duration.value}
+                                               onChange={this.changeDurationValue.bind(this, t.uid)}/>
+                                        <select value={t.duration.unit}
+                                                onChange={this.changeDurationUnit.bind(this, t.uid)}>
+                                            <option value={'hr'}>hour(s)</option>
+                                            <option value={'min'}>minute(s)</option>
+                                        </select>
                                     </div>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>TIME</span>
