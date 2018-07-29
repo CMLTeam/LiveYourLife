@@ -6,7 +6,7 @@
 
 .parsed-element {
     display: inline-block;
-    border: 1px dashed #eee;
+    /*border: 1px dashed #eee;*/
     padding: 5px;
     margin: 5px;
 }
@@ -24,5 +24,7 @@
 }
 
 .task-item input {
-    width: 600px
+    width: 490px;
+    /*border: 0;*/
+    padding: 2px 7px;
 }

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 class Page1EnterTasks extends Component {
     state = {
@@ -131,8 +132,8 @@ class Page1EnterTasks extends Component {
     };
 
     parseLocation = (v) => {
-        return v.replace(/^go to/i, '')
-            .replace(/^visit/i, '');
+        return v.replace(/^go to\s+/i, '')
+            .replace(/^visit\s+/i, '');
     };
 
     parseDuration = (v) => {
@@ -173,13 +174,15 @@ class Page1EnterTasks extends Component {
     };
 
     removeTask = (uid) => {
-        this.setState({tasks: this.state.tasks.filter(e => e.uid !== uid)})
+        let tasks = this.state.tasks.filter(e => e.uid !== uid);
+        this.setState({tasks});
+        this.rememberTasks(tasks);
     };
 
     render() {
         return (
             <div>
-                <h2>Enter Tasks</h2>
+                <h2>Today's activities</h2>
 
                 <div className={'task-list'}>
                     {this.state.tasks.map((t, index) =>
@@ -198,12 +201,12 @@ class Page1EnterTasks extends Component {
                                 <div style={{display: 'inline-block'}}>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>LOCATION</span>
-                                        {' '}{t.location}
+                                        {' '}<b>{t.location[0].toUpperCase() + t.location.substring(1)}</b>
                                     </div>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>DURATION</span>
                                         {' '}
-                                        <input type={'text'}
+                                        {/*<input type={'text'}
                                                style={{width: 30}}
                                                value={t.duration.value}
                                                onChange={this.changeDurationValue.bind(this, t.uid)}/>
@@ -211,12 +214,13 @@ class Page1EnterTasks extends Component {
                                                 onChange={this.changeDurationUnit.bind(this, t.uid)}>
                                             <option value={'hr'}>hour(s)</option>
                                             <option value={'min'}>minute(s)</option>
-                                        </select>
+                                        </select>*/}
+                                        <b>{t.duration.value} {t.duration.unit}</b>
                                     </div>
                                     <div className={'parsed-element'}>
                                         <span className={'parsed-element-name'}>TIME</span>
                                         {' '}
-                                        <select value={t.time.hour}
+                                        {/*<select value={t.time.hour}
                                                 onChange={this.changeTimeHour.bind(this, t.uid)}>
                                             <option value={-1}>ANY</option>
                                             <option value={1}>1</option>
@@ -239,13 +243,20 @@ class Page1EnterTasks extends Component {
                                             <option value={'am'}>AM</option>
                                             <option value={'pm'}>PM</option>
                                         </select>
-                                        }
+                                        }*/}
+                                        <b>
+                                            {t.time.hour === -1 ? 'ANY' : t.time.hour}
+                                            {' '}
+                                            {t.time.hour > 0 && t.time.ampm.toUpperCase()}
+                                        </b>
                                     </div>
                                 </div>
                             }
                             {
                                 !t.isRaw &&
-                                <button type={'button'} onClick={this.removeTask.bind(this, t.uid)}>x</button>
+                                <FontAwesomeIcon icon={"trash-alt"}
+                                                 style={{cursor: 'pointer', marginLeft: 20, color: '#aaa'}}
+                                                 onClick={this.removeTask.bind(this, t.uid)}/>
                             }
                         </div>)
                     }
