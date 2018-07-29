@@ -7,6 +7,7 @@ import {GoogleMap, Marker, Polyline, withGoogleMap, withScriptjs} from "react-go
 import Routes from './Routes1';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import uberLogo from '../uber-logo-9B6033C292-seeklogo.com.png';
+import logo from '../logo-1.png';
 
 const PRICE = 'Max Price';
 const CALORIES = 'Min Calories';
@@ -183,7 +184,7 @@ class Page2ApplyGoals extends Component {
         const {cal, cost, duration} = this.state;
         return (
             <div>
-                <h2>Live your life</h2>
+                <h2 style={{marginBottom:30}}>{/*<img src={logo} height={100}/>*/} Live Your Life</h2>
 
                 <label><input type={'radio'} name={'preset'}
                               checked={this.state.preset === balanced}
@@ -268,8 +269,9 @@ class Page2ApplyGoals extends Component {
                     </table>
                 }
 
-                <br/>
-                <Link to={'/'}>Prev</Link>
+                {/*<br/>*/}
+                {/*<Link to={'/'}>Prev</Link>*/}
+                <div style={{fontSize:'0.8em', marginTop:40}}><a href={'https://www.cmlteam.com'}>© www.cmlteam.com</a></div>
             </div>
         );
     }
