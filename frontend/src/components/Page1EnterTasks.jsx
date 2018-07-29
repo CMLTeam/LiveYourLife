@@ -27,6 +27,10 @@ class Page1EnterTasks extends Component {
         }
     };
 
+    removeTask = (uid) => {
+        this.setState({tasks: this.state.tasks.filter(e => e.uid !== uid)})
+    };
+
     render() {
         return (
             <div>
@@ -47,6 +51,7 @@ class Page1EnterTasks extends Component {
                                 :
                                 <span>Parsed: {t.text}</span>
                             }
+                            <button type={'button'} onClick={this.removeTask.bind(this, t.uid)}>x</button>
                         </div>)
                     }
                 </div>
