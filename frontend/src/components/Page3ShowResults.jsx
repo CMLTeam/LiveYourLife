@@ -8,7 +8,7 @@ class Page3ShowResults extends Component {
                 Show Results
 
                 <br/>
-                <Link to={'/'}>Prev</Link>
+                <Link to={'/page2'}>Prev</Link>
             </div>
         );
     }
