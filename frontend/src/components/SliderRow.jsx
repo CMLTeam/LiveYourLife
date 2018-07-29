@@ -19,7 +19,9 @@ class SliderRow extends Component {
                 <td style={{width: '80%'}}>
                     <SliderT value={this.state.value}
                              onChange={(value) => {
-                                 this.setState({value})
+                                 this.setState({value});
+                                 if (this.props.onChange)
+                                     this.props.onChange(value);
                              }}
                              marks={{0: '0', 100: '100%'}}
                     />

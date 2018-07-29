@@ -79,6 +79,18 @@ class Page2ApplyGoals extends Component {
         })
     };
 
+    selectPresetByValues = (presetValues) => {
+        const route = this.determineRoute(presetValues[PRICE], presetValues[CALORIES]);
+        const {cal, cost, duration} = route;
+        this.setState({
+            presetValues,
+            lines: this.coordRouteToLines(route),
+            cal,
+            cost,
+            duration
+        })
+    };
+
     determineRouteByPresetName = (preset) => {
         let routes = [...Routes];
         if (preset === fastest) {
@@ -88,23 +100,22 @@ class Page2ApplyGoals extends Component {
             routes.sort((a, b) => a.cost - b.cost); // cost asc
             return routes[0];
         } else if (preset === healthiest) {
-            routes.sort((a, b) => - (a.cal - b.cal)); // cal desc
+            routes.sort((a, b) => -(a.cal - b.cal)); // cal desc
             return routes[0];
         } else if (preset === balanced)
             return this.determineRoute(50, 50);
     };
 
     determineRoute = (maxPrice, minCalories) => {
-        // return Routes[0];
         let routes = [...Routes];
         routes.sort((a, b) => a.cost - b.cost); // cost asc
         let n = (routes.length * maxPrice / 100) | 0;
-        routes = routes.slice(0, Math.max(n,1));
-        console.info(111,n,routes)
+        routes = routes.slice(0, Math.max(n, 1));
+        console.info(111, n, routes)
         routes.sort((a, b) => a.cal - b.cal); // cal asc
         n = (routes.length * minCalories / 100) | 0;
-        routes = routes.slice(0, Math.max(n,1));
-        console.info(222,n,routes)
+        routes = routes.slice(0, Math.max(n, 1));
+        console.info(222, n, routes)
         routes.sort((a, b) => a.duration - b.duration); // duration asc
         return routes[0];
     };
@@ -164,6 +175,13 @@ class Page2ApplyGoals extends Component {
                                 <SliderRow title={p}
                                            key={this.state.preset + p}
                                            value={this.state.presetValues[p]}
+                                           onChange={(v) => {
+                                               let {presetValues} = this.state;
+                                               presetValues = {...presetValues, [p]: v};
+                                               console.info(333,presetValues)
+                                               this.setState({presetValues});
+                                               this.selectPresetByValues(presetValues);
+                                           }}
                                 />
                             )
                         }
