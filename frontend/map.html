@@ -30,8 +30,8 @@
         },
         // starbucks 2
         end : {
-          lat: 37.775773,
-          lng: -122.4209535
+          lat: 37.771125,
+          lng: -122.421707
         },
         method: 'WALKING'
       }
@@ -63,7 +63,8 @@
         //placesService = new google.maps.places.PlacesService(map);
         //placesService.nearbySearch(request, callback);
         createMarkers(mockPlaces);
-        getRoute(dummyTravelLeg.start, dummyTravelLeg.end);
+        // use price models to select mode??
+        getRoute(dummyTravelLeg.start, dummyTravelLeg.end, "bike");
         calcRoute(dummyTravelLeg);
       }
 
@@ -94,11 +95,11 @@
         });
       }
 
-      function getRoute(start, end) {
+      function getRoute(start, end, mode) {
         // coord.co request
         $.get('https://api.coord.co/v1/routing/route?origin_latitude=' + start.lat + '&origin_longitude=' + start.lng
           + '&destination_latitude=' + end.lat + '&destination_longitude=' + end.lng
-          + '&modes=&num_options=3&priority=soon&time=&time_mode=depart&bike_systems=&access_key=iZlC7r9ybCya_HS4BsasHMQV5kPqFSNpsSZdu8C8ANE',
+          + '&modes=' + mode + '&num_options=1&priority=soon&time=&time_mode=depart&bike_systems=&access_key=iZlC7r9ybCya_HS4BsasHMQV5kPqFSNpsSZdu8C8ANE',
           function(req,res) {
             //coord.co response
             //console.log(JSON.stringify(req));
