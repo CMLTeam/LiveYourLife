@@ -132,6 +132,12 @@ class Page1EnterTasks extends Component {
 
         let match;
 
+        if (/morning/i.exec(v))
+            return {hour: 9, ampm: 'am'};
+
+        if (/evening/i.exec(v))
+            return {hour: 6, ampm: 'pm'};
+
         if (match = /(\d+)\s*(am|pm)/i.exec(v))
             return {hour: match[1], ampm: match[2]};
 
